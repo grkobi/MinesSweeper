@@ -7,3 +7,10 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min);
 }
+
+function startTimer() {
+    gInterval = setInterval(function () {
+        gGame.secsPassed = gGame.secsPassed + 11;
+        elTimer.innerHTML = Math.floor(gGame.secsPassed / 1000);
+    }, 10)
+}

@@ -6,11 +6,13 @@ var gLevel = {
     SIZE: 4,
     MINES: 2
 };
-//var gIsGameOver = false;
-var gLivesCount = 3
+
+var gLivesCount = 3;
+var gInterval;
 
 const MINE = '💣'
 const FLAG = '🚩'
+
 
 var gGame = {
     isOn: true,
@@ -19,10 +21,13 @@ var gGame = {
     secsPassed: 0
 }
 
+var elTimer = document.querySelector('.timer')
 function onInit() {
+    clearInterval(gInterval);
     gGame.isOn = true,
     gBoard = buildBoard();
     renderBoard(gBoard);
+    elTimer.innerHTML = '0';
 }
 
 function buildBoard() {
@@ -40,9 +45,20 @@ function buildBoard() {
         }
 
     }
+    var mineSum = 0;
+    console.log(gLevel.MINES)
+    // Putting mines in random positions
+    while (mineSum < gLevel.MINES) {
+        var randMinePosRow = getRandomInt(0, gLevel.SIZE)
+        var randMinePosCol = getRandomInt(0, gLevel.SIZE)
+        if(board[randMinePosRow][randMinePosCol].isMine) continue
+        board[randMinePosRow][randMinePosCol].isMine = true
+        mineSum++
+    }
+
     //setting two cells as mines
-    board[3][3].isMine = true
-    board[1][1].isMine = true
+    //board[3][3].isMine = true
+    //board[1][1].isMine = true
     setMinesNegsCount(board)
 
     return board
@@ -51,6 +67,7 @@ function buildBoard() {
 function setMinesNegsCount(board) {
     const rowCount = board.length;
     const colCount = board[0].length;
+    //Nested loops: Checking in each cell if there's a mine in each of the surrounding cells
     for (var row = 0; row < rowCount; row++) {
         for (var col = 0; col < colCount; col++) {
             for (var i = Math.max(0, row - 1); i <= Math.min(row + 1, rowCount - 1); i++) {
@@ -87,21 +104,6 @@ function setMinesNegsCount(board, rowIdx, colIdx) {
 */
 
 function renderBoard(board) {
-    /*
-        var strHTML = '<table><tbody>'
-        for (var i = 0; i < gLevel.SIZE; i++) {
-            strHTML += '<tr>';
-            for (var j = 0; j < gLevel.SIZE; j++) {
-                //var cell = gBoard[i][j]
-                var className = `cell cell-${i}-${j}`
-                strHTML += `<td class="${className}" onclick="select(event)">${''}</td>`
-            }
-            strHTML += '</tr>'
-        }
-        strHTML += '</tbody></table>'
-        const elContainer = document.querySelector('.board-container')
-        elContainer.innerHTML = strHTML
-        */
     var strHTML = '<tbody>'
     for (var i = 0; i < gLevel.SIZE; i++) {
         strHTML += '<tr>'
@@ -123,6 +125,8 @@ function onCellClicked(elCell, i, j) {
     var elBtn;
     var gameResult;
     if (!gGame.isOn) return
+    clearInterval(gInterval);
+    startTimer()
     if (gBoard[i][j].isMarked || gBoard[i][j].isShown) return
     gBoard[i][j].isShown = true
     //elCell.classList.add("shown")
@@ -131,23 +135,23 @@ function onCellClicked(elCell, i, j) {
     if (gBoard[i][j].isMine) {
         elCell.innerHTML = MINE
         gLivesCount--
-//        gameResult = checkGameOver(gBoard)
         if (gameResult === 'lose') {
             gGame.isOn = false;
             elRes = document.querySelector('.game-over-lose')
             elRes.classList.remove('hide')
             elBtn = document.querySelector('.start-over')
             elBtn.classList.remove('hide')
+            clearInterval(gInterval);
         }
     } else {
         elCell.innerText = gBoard[i][j].minesAroundCount;
-     //   gameResult = checkGameOver(gBoard)
+        //   gameResult = checkGameOver(gBoard)
         if (gameResult === 'win') {
+            clearInterval(gInterval);
             elRes = document.querySelector('.game-over-win')
             elRes.classList.remove('hide')
             elBtn = document.querySelector('.start-over')
             elBtn.classList.remove('hide')
-            console.log('win')
             expandShown(i, j)
         }
     }
@@ -201,7 +205,7 @@ function checkGameOver(board) {
                 countNotMine++
         }
     }
-    console.log(countNotMine)
+    //console.log(countNotMine)
     if (countNotMine + gLevel.MINES === gLevel.SIZE ** 2) {
         gameResult = 'win'
         return gameResult
@@ -221,16 +225,14 @@ function restartGame() {
     const elBtn = document.querySelector('.start-over')
     elBtn.classList.add('hide')
     var gameRes = checkGameOver(gBoard)
-    if (gameRes==='lose'){
-    const el = document.querySelector('.game-over-lose')
-    el.classList.add('hide')
+    if (gameRes === 'lose') {
+        const el = document.querySelector('.game-over-lose')
+        el.classList.add('hide')
     } else {
         const el = document.querySelector('.game-over-win')
         el.classList.add('hide')
     }
     onInit()
-
-    
 }
 
 
