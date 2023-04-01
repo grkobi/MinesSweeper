@@ -25,7 +25,7 @@ function onInit() {
     gGame.isOn = true,
     gBoard = buildBoard();
     renderBoard(gBoard);
-    elTimer.innerHTML = '0';
+    elTimer.innerHTML = '00:00';
 }
 
 function buildBoard() {
