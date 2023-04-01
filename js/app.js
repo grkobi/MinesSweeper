@@ -39,8 +39,8 @@ function buildBoard() {
 
     }
     //setting two cells as mines
-    //board[3][3].isMine = true
-    board[1][1].isMine = true
+    board[0][0].isMine = true
+    //board[1][1].isMine = true
     setMinesNegsCount(board)
 
     return board
