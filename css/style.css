@@ -22,3 +22,33 @@ h1 {
     font-size: 50px;
     margin: 100px;
 }
+
+.level-btn {
+    display: inline;
+}
+
+.game-over-lose{
+    padding:50px;
+    font-size: 40px;
+}
+
+.game-over-win{
+    padding:50px;
+    font-size: 40px;
+}
+
+.hide {
+    display: none;
+}
+
+.start-over{
+    cursor: pointer;
+}
+
+footer {
+    
+    height: 60px;
+    width: 100%;
+    position:absolute;
+    padding-top:160px;
+}
